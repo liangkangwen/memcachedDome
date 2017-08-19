@@ -27,13 +27,13 @@
 	    </plugins>  
 	</build>  
 	<dependencies>
-	 		<!-- memcached -->
+	 		<!-- memcached spy-->
 		<dependency>
 		    <groupId>net.spy</groupId>
 		    <artifactId>spymemcached</artifactId>
-		    <version>2.12.3</version>
-		</dependency>
-			
+		    <version>2.10.2</version>
+		</dependency>  
+		
 			<!-- with junit4.8.2 -->
 		<dependency>
 			<groupId>junit</groupId>

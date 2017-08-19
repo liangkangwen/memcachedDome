@@ -34,7 +34,7 @@ public class MemcachedTest extends SpringJunitTest {
 		//UserPO user = (UserPO) memcachedClient.get("user_2");
 		//System.out.println(value + "   " + user);
 		
-		userDaoImpl.getObject(3);
+		userDaoImpl.getObject(2);
 	}
 	
 	@Test

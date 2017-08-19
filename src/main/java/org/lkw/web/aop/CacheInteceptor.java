@@ -6,7 +6,6 @@ import java.net.SocketAddress;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-import java.util.Map.Entry;
 
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -14,6 +13,7 @@ import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
+import org.lkw.utils.Telnet;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import net.spy.memcached.MemcachedClient;
@@ -52,33 +52,28 @@ public class CacheInteceptor {
 	public void doAfter(JoinPoint jp){
 		//包名+ 类名 
 		String packageName = jp.getTarget().getClass().getName();
-		
-
 		Map<SocketAddress, Map<String, String>> keyMap = memcachedClient.getStats();
 		Set<SocketAddress> addressSet = keyMap.keySet();
 		Iterator<SocketAddress> it = addressSet.iterator();
 		while (it.hasNext()) {
 			SocketAddress addr = it.next();
-			Map<String, String> stat = keyMap.get(addr);
+			String[] allkeys = Telnet.allkeys(addr);
+			for (String key : allkeys) {
+				if (key.startsWith(packageName)) {
+					memcachedClient.delete(key);
+				}
+			}
+			/*Map<String, String> stat = keyMap.get(addr);
 			Set<String> keys = stat.keySet();
 			Iterator<String> key = keys.iterator();
 			while (key.hasNext()) {
 				String keyVal = key.next();
-				String string = stat.get(keyVal);
 				//包名+ 类名  开始的 都清理
 				if (keyVal.startsWith(packageName)) {
 					memcachedClient.delete(keyVal);
 				}
-			}
+			}*/
 		}
-		//
-	/*	Set<Entry<String, Object>> entrySet = keySet.entrySet();
-		//遍历
-		for(Entry<String, Object> entry : entrySet){
-			if(entry.getKey().startsWith(packageName)){
-				memCachedClient.delete(entry.getKey());
-			}
-		}*/
 	}
 	
 	/**
